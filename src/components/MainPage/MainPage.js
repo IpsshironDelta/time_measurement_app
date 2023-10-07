@@ -23,11 +23,11 @@ import RestartAltIcon            from '@mui/icons-material/RestartAlt';
 import SaveAltIcon               from '@mui/icons-material/SaveAlt';
 import TaskIcon                  from '@mui/icons-material/Task';
 import { useHistory }            from "react-router-dom";
-import useProfile                from "../../components/hooks/useProfile"
+import useProfile                from "../hooks/useProfile"
 
 // -------------------定数-------------------
 const WorkTimeInfo = "WorkTimeInfo"
-const UserInfo     = "UserInfo"
+const UserInfo     = "users"
 
 let startTime;
 let timeoutId;

@@ -11,14 +11,17 @@ import { Avatar,
         Grid , 
         Tabs ,
         Tab , }           from "@mui/material"
-import { useHistory }     from "react-router-dom";
+import { useHistory }     from "react-router-dom"
 import Header             from "../../Header"
-import { styled }         from '@mui/material/styles';
+import { styled }         from '@mui/material/styles'
 import TableCell, 
-     { tableCellClasses } from '@mui/material/TableCell';
-import TableRow           from '@mui/material/TableRow';
-import TaskIcon           from '@mui/icons-material/Task';
-import store              from '../../store';
+     { tableCellClasses } from '@mui/material/TableCell'
+import TableRow           from '@mui/material/TableRow'
+import TaskIcon           from '@mui/icons-material/Task'
+import {firebaseApp ,}    from "../../firebase"
+import useUser            from "../hooks/getuseAuth"
+import useProfile         from "../hooks/useProfile"
+
 ////////////////////////////////////////////
 //　定数
 ////////////////////////////////////////////
@@ -79,8 +82,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 function UserInfo(data) {
-  const [image    , setImage]    = useState(store.getState().imageURL)
-  const [name     , setName]     = useState(store.getState().userName)
+  const [name, setName] = useState()
+  const [image, setImage] = useState()
+  const [error, setError] = useState(false)
+  const [success , setSuccess] = useState(false)
+  const firestorage = firebaseApp.firestorage
+  const firestore = firebaseApp.firestore
+  const { user } = useUser()
+  const profileData = useProfile()
+  const profile = profileData.profile
 
 
   // 初回起動時
@@ -97,7 +107,7 @@ function UserInfo(data) {
         <Header/>
         <Grid container spacing={2}>
           <Grid item xs={12} align="center">
-            <Typography variant="h4">ユーザー情報</Typography >
+            <Typography variant="h4">マイページ</Typography >
           </Grid>
 
           {/* データ表示領域 */}
@@ -107,9 +117,9 @@ function UserInfo(data) {
               sx = {{ fontSize: 18 ,
                 backgroundColor : "#f5f5f5",
                 color : "#000000",}}>
-              ユーザー名
+              ニックネーム
             </Typography>
-            {/* ユーザー名表示 */}
+            {/* ニックネーム表示 */}
             <Typography 
               align="left"
               sx={{ p: 1, 
@@ -122,7 +132,7 @@ function UserInfo(data) {
                     borderRadius : 5,
                     color:"#6495ed",
                     borderRadius : 3,}}>
-              {name ? name : "-"}
+              {name ? name : profile ? profile.name : ""}
             </Typography>
           </Grid>
           <Grid item xs={1} align="center"></Grid>
@@ -137,7 +147,8 @@ function UserInfo(data) {
             {/* アバター画像表示 */}
             <Avatar
               sx={{ width: 100, height: 100 }}
-              src={image ? image : ""}alt=""/>
+              src={image ? URL.createObjectURL(image) : profile ? profile.image : ""} 
+              alt=""/>
               <input
                   id     = "image"
                   type   = "file"
