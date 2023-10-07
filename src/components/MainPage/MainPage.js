@@ -24,6 +24,7 @@ import SaveAltIcon               from '@mui/icons-material/SaveAlt';
 import TaskIcon                  from '@mui/icons-material/Task';
 import { useHistory }            from "react-router-dom";
 import useProfile                from "../../components/hooks/useProfile"
+
 // -------------------定数-------------------
 const WorkTimeInfo = "WorkTimeInfo"
 const UserInfo     = "UserInfo"
@@ -251,7 +252,7 @@ function MainPage() {
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1,
                    bgcolor: '#f5f5f5' }}>
-        <Header/>
+        <Header info = {userinfo}/>
         <Grid container spacing={2}>
           {/* タイトル表示領域 */}
           <Grid item xs={12} align="center">

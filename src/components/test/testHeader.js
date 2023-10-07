@@ -17,7 +17,7 @@ import {collection,
        getDocs}        from 'firebase/firestore'
 
 // -------------------定数-------------------
-const UserInfo     = "UserInfo"
+const UserInfo     = "users"
 
 export default function ButtonAppBar(props) {
   const history     = useHistory()
@@ -26,39 +26,6 @@ export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const [userinfo  ,  setUserInfo]  =  useState()  // ユーザー情報を代入
-  const UserInfoAry = []
-
-  // 初回起動
-  useEffect(() => {
-    // ユーザー情報を取得する
-    fechUserData()
-  },[])
-  
-  // ユーザー情報を取得する
-  const fechUserData = () => {
-    const firestore = firebaseApp.firestore
-    getDocs(collection(db, UserInfo )).then((querySnapshot)=>{
-      querySnapshot.forEach((document) => {        
-        if (store.getState().loginUserUID == document.data().uid){
-          console.log("一致！ => ", document.data())
-          UserInfoAry.push({
-            ...document.data(),
-          })
-          store.getState().userName       = document.data().name
-          store.getState().loginUserEmail = document.data().email
-          store.getState().loginUserUID   = document.data().uid
-          store.getState().imageURL       = document.data().image
-          console.log(store.getState().userName)
-          console.log(store.getState().loginUserEmail)
-          console.log(store.getState().loginUserUID)
-          console.log(store.getState().imageURL)
-        }
-      })
-    }).then(()=>{
-      setUserInfo([...UserInfoAry])
-    })
-    console.log("★UserInfoAry => " , UserInfoAry)
-  }
 
   // アバターアイコンがクリックされた時
   const handleClickAvatar = (event) =>{
@@ -109,7 +76,9 @@ export default function ButtonAppBar(props) {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClickAvatar}>
-                  <Avatar src={userinfo ? userinfo[0].image : ""} alt="" />
+                  <Avatar 
+                    src={profile ? profile.image : ""}
+                    alt="" />
                   {/* アバターアイコンをクリックしたらメニュー表示する */}
               </IconButton>
             :

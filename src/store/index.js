@@ -12,6 +12,7 @@ const initialState = {
   memo           : "" , // メモ
   loginUserUID   : "" , // UID
   loginUserEmail : "" , // メールアドレス
+  imageURL       : "" , // アイコンのURL
 };
 
 const reducer = (state = initialState ,action) => {

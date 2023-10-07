@@ -18,7 +18,7 @@ import TableCell,
      { tableCellClasses } from '@mui/material/TableCell';
 import TableRow           from '@mui/material/TableRow';
 import TaskIcon           from '@mui/icons-material/Task';
-
+import store              from '../../store';
 ////////////////////////////////////////////
 //　定数
 ////////////////////////////////////////////
@@ -79,12 +79,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 function UserInfo(data) {
-  const [image    , setImage]    = useState()
-  const [name     , setName]     = useState("てＳＴ")
-  const [userinfo , setUserInfo] = useState("てＳＴ");
+  const [image    , setImage]    = useState(store.getState().imageURL)
+  const [name     , setName]     = useState(store.getState().userName)
+
 
   // 初回起動時
   useEffect(() => {
+    // ユーザー情報を取得する
   },[])
 
   const history = useHistory()
@@ -121,7 +122,7 @@ function UserInfo(data) {
                     borderRadius : 5,
                     color:"#6495ed",
                     borderRadius : 3,}}>
-              {name ? name : userinfo ? userinfo.name : ""}
+              {name ? name : "-"}
             </Typography>
           </Grid>
           <Grid item xs={1} align="center"></Grid>
@@ -136,7 +137,7 @@ function UserInfo(data) {
             {/* アバター画像表示 */}
             <Avatar
               sx={{ width: 100, height: 100 }}
-              src={image ? URL.createObjectURL(image) : userinfo ? userinfo.image : ""}alt=""/>
+              src={image ? image : ""}alt=""/>
               <input
                   id     = "image"
                   type   = "file"

@@ -9,12 +9,19 @@ import UserInfoEdit      from "./components/UserInfoEdit/UserInfoEdit"
 import Login             from "./components/Login/Login"
 import SignUp            from './components/SignUp/SignUp'
 import PasswordReset     from "./components/PasswordReset/PasswordReset"
+import Test          from "./components/test/test"
 import './App.css';
 
 function App() {
   return (
     <BrowserRouter>
       <Switch>
+
+        {/* TEST画面 */}
+        <Route exact path="/test">
+          <Test />
+        </Route>
+
         {/* ホーム画面 */}
         <Route exact path="/">
           <MainPage />
