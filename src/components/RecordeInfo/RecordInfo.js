@@ -18,13 +18,12 @@ import TableHead          from '@mui/material/TableHead';
 import TableRow           from '@mui/material/TableRow';
 import Paper              from '@mui/material/Paper';
 import TaskIcon           from '@mui/icons-material/Task';
-import store              from '../../store';
+
 import { db }             from '../../firebase'
-import { doc , 
-        collection,
-        getDocs ,
-        updateDoc,}       from 'firebase/firestore'
+import {collection,
+        getDocs ,}        from 'firebase/firestore'
 import { firebaseApp }    from "../../firebase"
+import Accordion          from "./RecordAccordion"
 
 ////////////////////////////////////////////
 //　定数
@@ -86,32 +85,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-function 個人鑑定編集(data) {
+function 記録表示(data) {
   // ------------------入力系変数------------------
-  const [record  , setRecord]  = useState()   // 業務記録を格納
-  const RecordDataAry     = []
   const history = useHistory()
-
-  // 初回起動時
-  useEffect(() => {
-    // 業務記録データを取得
-    fechRecordData()
-  },[])
-
-  // 業務記録データを取得
-  const fechRecordData = () => {
-    const firestore = firebaseApp.firestore
-    getDocs(collection(db, WorkTimeInfo )).then((querySnapshot)=>{
-      querySnapshot.forEach((document) => {        
-        RecordDataAry.push({
-          ...document.data(),
-        })  
-      })
-    }).then(()=>{
-      setRecord([...RecordDataAry])
-    })
-    console.log(RecordDataAry)
-  }
 
   return (
       <Container maxWidth="sm">
@@ -125,49 +101,7 @@ function 個人鑑定編集(data) {
 
           {/* データ表示領域 */}
           <Grid item xs={12} align="center">
-
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 300 }} aria-label="customized table">
-                {/* ヘッダー部分 */}
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center">1.記録日時</StyledTableCell>
-                    <StyledTableCell align="center">2.担当者</StyledTableCell>
-                    <StyledTableCell align="center">3.業務内容</StyledTableCell>
-                    <StyledTableCell align="center">4.記録</StyledTableCell>
-                    <StyledTableCell align="center">5.個数</StyledTableCell>
-                    <StyledTableCell align="center">6.平均値</StyledTableCell>
-                    <StyledTableCell align="center">7.コメント</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-
-                {/* ボディー部分 */}
-                <TableBody>
-                {record ? (record.map((item) => (
-                    <StyledTableRow>
-                      <StyledTableCell align="center">{item.date}</StyledTableCell>
-                      <StyledTableCell align="center">{item.userName}</StyledTableCell>
-                      <StyledTableCell align="center">{item.work}</StyledTableCell>
-                      <StyledTableCell align="center">{item.time}</StyledTableCell>
-                      <StyledTableCell align="center">{item.num}</StyledTableCell>
-                      <StyledTableCell align="center">{item.avarage}</StyledTableCell>
-                      <StyledTableCell align="center">{item.memo}</StyledTableCell>
-                    </StyledTableRow>
-                  ))) : 
-                    <StyledTableRow >
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                        <StyledTableCell align="center">-</StyledTableCell>
-                      </StyledTableRow>}
-              
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <br/>
+            <Accordion/>
           </Grid>
 
           {/* ボタン表示領域 */}
@@ -185,4 +119,4 @@ function 個人鑑定編集(data) {
   );
 }
 
-export default 個人鑑定編集;
+export default 記録表示;

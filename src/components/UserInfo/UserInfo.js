@@ -21,6 +21,7 @@ import TaskIcon           from '@mui/icons-material/Task'
 import {firebaseApp ,}    from "../../firebase"
 import useUser            from "../hooks/getuseAuth"
 import useProfile         from "../hooks/useProfile"
+import store from '../../store'
 
 ////////////////////////////////////////////
 //　定数
@@ -92,11 +93,14 @@ function UserInfo(data) {
   const profileData = useProfile()
   const profile = profileData.profile
 
-
   // 初回起動時
   useEffect(() => {
-    // ユーザー情報を取得する
   },[])
+
+  // 編集ボタンクリック時の処理
+  const handleClickEdit = () =>{
+    store.getState().userName = profile.name
+  }
 
   const history = useHistory()
 
@@ -162,6 +166,7 @@ function UserInfo(data) {
             <Button
                 variant="contained"
                 onClick  = {() => {
+                    handleClickEdit()
                     history.push("/userinfo/edit")}}
                 endIcon={<TaskIcon />}>ユーザー情報を編集する</Button>
           </Grid>

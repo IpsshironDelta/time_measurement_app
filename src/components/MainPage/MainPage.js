@@ -197,6 +197,8 @@ function MainPage() {
         userName : userinfo[0].name ,
         work     : work             , 
         avarage  : store.getState().avarage,
+        uid      : userinfo[0].uid  ,
+        image    : userinfo[0].image,
       })
       console.log("firestoreに登録が完了しました。")
       setSuccessmessage("記録を保存しました。")

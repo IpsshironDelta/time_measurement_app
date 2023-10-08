@@ -8,7 +8,8 @@ import { Paper,
         Avatar,
         Alert,
         Grid ,}                          from "@mui/material"
-import {firebaseApp ,}                   from "../../firebase"
+import {firebaseApp ,
+        db}                              from "../../firebase"
 import { ref, 
         uploadBytes,
         getDownloadURL }                 from "firebase/storage"
@@ -17,15 +18,17 @@ import useProfile                        from "../hooks/useProfile";
 import { addDoc , 
         collection ,
         doc ,
-        updateDoc }                      from "firebase/firestore"
+        updateDoc ,
+        getDocs , }                      from "firebase/firestore"
 import Header                            from "../../Header"
 import SystemUpdateIcon                  from '@mui/icons-material/SystemUpdate';
 import CancelIcon                        from '@mui/icons-material/Cancel';
 import PhotoSizeSelectActualOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActualOutlined';
 import { useHistory }                    from "react-router-dom";
+import store                             from '../../store'
 
 const Profile = () => {
-  const [name, setName] = useState()
+  const [name, setName] = useState(store.getState().userName)
   const [image, setImage] = useState()
   const [error, setError] = useState(false)
   const [success , setSuccess] = useState(false)
@@ -57,30 +60,42 @@ const Profile = () => {
     try {
       const uid = user.uid
       const docRef = collection(firestore, "users")
-  
+      // 画像ファイルが存在するか確認する
       if (image) {
         const imageRef = ref(firestorage, "USER_PROFILE_IMG/" + uid + "/" +image.name);
 
         uploadBytes(imageRef, image).then(() => {
           getDownloadURL(imageRef).then((url) => {
             if(profile){
+                console.log("ユーザー情報を更新する")
                 const userRef = doc(firestore, "users", profile?.id)
                 updateDoc(userRef , {
                     name,
                     image:url,
                 })    
                 console.log(url)
+                // 業務記録のDBに対してユーザー名を更新する
+                UpDateWorkTimeName(profile.uid , name)
+                // 業務記録のDBに対して画像URLを更新する
+                UpDateWorkTimeImage(profile.uid , url)
+
                 setSuccess(true)
                 setTimeout(() => {
                   history.push("/userinfo")
                 } , 2000)
             }else{
+                console.log("新しくユーザー情報を追加する")
                 addDoc(docRef, {
                     name,
                     image: url,
                     uid,
                   })
                 console.log(url)
+                // 業務記録のDBに対してユーザー名を更新する
+                UpDateWorkTimeName(profile.uid , name)
+                // 業務記録のDBに対して画像URLを更新する
+                UpDateWorkTimeImage(profile.uid , url)
+
                 setSuccess(true)
                 setTimeout(() => {
                   history.push("/userinfo")
@@ -89,12 +104,19 @@ const Profile = () => {
           })
         })
       }else{
+        // ニックネームの更新のみの場合
+        console.log("ニックネームのみ更新")
         if(profile){
             const userRef = doc(firestore, "users", profile?.id);
             updateDoc(userRef, { name });
         } else {
-            addDoc(docRef, { name, image: "", uid });
+            addDoc(docRef, { name, 
+                            image: "", 
+                            uid });
         }
+        // 業務記録のDBに対してユーザー名を更新する
+        UpDateWorkTimeName(profile.uid , name)
+
         setSuccess(true)
         setTimeout(() => {
           history.push("/userinfo")
@@ -105,6 +127,52 @@ const Profile = () => {
       setError(true);
     }
   }
+
+  // 業務記録のユーザー情報を更新する
+  const UpDateWorkTimeName = (getUID , RePlaceUserName) => {
+    console.log("業務記録のユーザー情報を更新する : getUID =>" , getUID)
+    console.log("業務記録のユーザー情報を更新する : RePlaceUserName => " , RePlaceUserName)
+    const firestore = firebaseApp.firestore
+    const WorkTimeRef = doc(firestore, "WorkTimeInfo", getUID)
+    
+    getDocs(collection(db, "WorkTimeInfo" )).then((querySnapshot)=>{
+      querySnapshot.forEach((document) => {        
+        if (getUID == document.data().uid){
+          console.log("getUID一致！ => ", document.data().uid)
+          console.log("一致時のID => ", document.id)
+          const WorkTimeInfoRef = doc(firestore, "WorkTimeInfo" , document.id)
+          updateDoc(WorkTimeInfoRef , {
+              userName : RePlaceUserName,
+          })
+          console.log("ユーザー名更新OK")   
+        }
+      })
+    }).then(()=>{
+    })
+  }
+
+    // 業務記録の画像URLを更新する
+    const UpDateWorkTimeImage = (getUID , RePlaceImage) => {
+      console.log("業務記録の画像URLを更新する : getUID =>" , getUID)
+      console.log("業務記録の画像URLを更新する : RePlaceImage => " , RePlaceImage)
+      const firestore = firebaseApp.firestore
+      const WorkTimeRef = doc(firestore, "WorkTimeInfo", getUID)
+      
+      getDocs(collection(db, "WorkTimeInfo" )).then((querySnapshot)=>{
+        querySnapshot.forEach((document) => {        
+          if (getUID == document.data().uid){
+            console.log("getUID一致！ => ", document.data().uid)
+            console.log("一致時のID => ", document.id)
+            const WorkTimeInfoRef = doc(firestore, "WorkTimeInfo" , document.id)
+            updateDoc(WorkTimeInfoRef , {
+                image : RePlaceImage,
+            }) 
+            console.log("画像URL更新OK")   
+          }
+        })
+      }).then(()=>{
+      })
+    }
 
   return (
     <Container maxWidth="sm">
@@ -125,6 +193,7 @@ const Profile = () => {
           name="name"
           autoComplete="name"
           autoFocus
+          defaultValue={name}
           value={name ? name  : ""}
           onChange={(e) => setName(e.target.value)}/>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 4 }}>
