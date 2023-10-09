@@ -52,7 +52,16 @@ export default function BasicAccordion() {
     return (
     <div>
         {record ? (record.map((item) => (
-            <Accordion>
+            <Accordion sx={{ p: 1, 
+                fontSize: 14 , 
+                background: "#ffffff" ,
+                borderTop    : "solid #6495ed 1px",
+                borderBottom : "solid #6495ed 1px",
+                borderLeft   : "solid #6495ed 1px",
+                borderRight  : "solid #6495ed 1px",
+                borderRadius : 5,
+                color:"#000000",
+                borderRadius : 3,}}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"

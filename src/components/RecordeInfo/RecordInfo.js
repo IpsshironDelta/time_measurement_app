@@ -94,25 +94,27 @@ function 記録表示(data) {
         <Box sx={{ flexGrow: 1,
                    bgcolor: '#f5f5f5' }}>
         <Header/>
-        <Grid container spacing={2}>
-          <Grid item xs={12} align="center">
-            <Typography variant="h4">過去の記録</Typography >
-          </Grid>
+        <Paper sx={{ m: 2, p: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} align="center">
+              <Typography variant="h4">過去の記録</Typography >
+            </Grid>
 
-          {/* データ表示領域 */}
-          <Grid item xs={12} align="center">
-            <Accordion/>
-          </Grid>
+            {/* データ表示領域 */}
+            <Grid item xs={12} align="center">
+              <Accordion/>
+            </Grid>
 
-          {/* ボタン表示領域 */}
-          <Grid item xs={12} align="center">
-            <Button
-                variant="contained"
-                onClick  = {() => {
-                    history.push("/")}}
-                endIcon={<TaskIcon />}>業務記録</Button>
+            {/* ボタン表示領域 */}
+            <Grid item xs={12} align="center">
+              <Button
+                  variant="contained"
+                  onClick  = {() => {
+                      history.push("/")}}
+                  endIcon={<TaskIcon />}>業務記録</Button>
+            </Grid>
           </Grid>
-        </Grid>
+          </Paper>
         <br/>
       </Box>
     </Container>
