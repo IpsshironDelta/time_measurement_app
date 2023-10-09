@@ -21,7 +21,7 @@ const theme = createTheme({
   palette: {
     // ボタンのカラー設定
     primary: {
-      main: '#b22028',
+      main: '#6495ed',
       contrastText: '#ffffff',
     },
     // 背景のカラー設定
@@ -60,7 +60,7 @@ export default function Signup() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",}}>
-        <Avatar sx={{ m: 1, bgcolor: "#b22028" }}>
+        <Avatar sx={{ m: 1, bgcolor: "#6495ed" }}>
           {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">

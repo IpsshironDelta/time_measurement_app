@@ -1,25 +1,24 @@
 import React             from 'react';
 import {BrowserRouter, 
         Switch, 
-        Route}           from "react-router-dom"
-import MainPage          from './components/MainPage/MainPage';
-import RecordInfo        from "./components/RecordeInfo/RecordInfo"
-import UserInfo          from "./components/UserInfo/UserInfo"
-import UserInfoEdit      from "./components/UserInfoEdit/UserInfoEdit"
-import Login             from "./components/Login/Login"
-import SignUp            from './components/SignUp/SignUp'
-import PasswordReset     from "./components/PasswordReset/PasswordReset"
-import Test          from "./components/test/test"
+        Route}            from "react-router-dom"
+import MainPage           from './components/MainPage/MainPage';
+import RecordInfo         from "./components/RecordeInfo/RecordInfo"
+import UserInfo           from "./components/UserInfo/UserInfo"
+import UserInfoEdit       from "./components/UserInfoEdit/UserInfoEdit"
+import Login              from "./components/Login/Login"
+import SignUp             from './components/SignUp/SignUp'
+import PasswordReset      from "./components/PasswordReset/PasswordReset"
+import DefaultUserSetting from "./components/DefaultUserSetting/DefaultUserSetting"
 import './App.css';
-
 function App() {
   return (
     <BrowserRouter>
       <Switch>
 
-        {/* TEST画面 */}
-        <Route exact path="/test">
-          <Test />
+        {/* 初期設定画面 */}
+        <Route exact path="/setting">
+          <DefaultUserSetting />
         </Route>
 
         {/* ホーム画面 */}

@@ -274,8 +274,8 @@ function MainPage() {
               {userinfo ? (userinfo.map((item) => (
                 <Typography 
                   sx = {{
-                    fontSize      : 16,
-                  }}>ユーザー：{item.name}</Typography>  
+                    fontSize      : 16,}}>
+                  {item.name}</Typography>
               )))
               :
                 <Typography 
