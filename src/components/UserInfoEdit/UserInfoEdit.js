@@ -28,16 +28,17 @@ import { useHistory }                    from "react-router-dom";
 import store                             from '../../store'
 
 const Profile = () => {
-  const [name, setName] = useState(store.getState().userName)
-  const [image, setImage] = useState()
-  const [error, setError] = useState(false)
+  const [name    , setName]    = useState(store.getState().userName)
+  const [uid     , setUID]     = useState(store.getState().loginUserUID)
+  const [image   , setImage]   = useState()
+  const [error   , setError]   = useState(false)
   const [success , setSuccess] = useState(false)
   const firestorage = firebaseApp.firestorage
-  const firestore = firebaseApp.firestore
-  const { user } = useUser()
+  const firestore   = firebaseApp.firestore
+  const { user }    = useUser()
   const profileData = useProfile()
-  const profile = profileData.profile
-  const history = useHistory()
+  const profile     = profileData.profile
+  const history     = useHistory()
 
   const handleChange = (e) => {
     console.log(e.target.files)
@@ -81,7 +82,7 @@ const Profile = () => {
 
                 setSuccess(true)
                 setTimeout(() => {
-                  history.push("/userinfo")
+                  history.push("/userinfo/" + profile.uid)
                 } , 2000)
             }else{
                 console.log("新しくユーザー情報を追加する")
@@ -98,7 +99,7 @@ const Profile = () => {
 
                 setSuccess(true)
                 setTimeout(() => {
-                  history.push("/userinfo")
+                  history.push("/userinfo/" + profile.uid)
                 } , 2000)
             }
           })
@@ -119,7 +120,7 @@ const Profile = () => {
 
         setSuccess(true)
         setTimeout(() => {
-          history.push("/userinfo")
+          history.push("/userinfo/" + profile.uid)
         } , 2000)
       }
     } catch (err) {
@@ -176,6 +177,8 @@ const Profile = () => {
 
   return (
     <Container maxWidth="sm">
+      <Box sx={{ flexGrow: 1,
+            bgcolor: '#f5f5f5' }}>
         <Header/>
       <Paper sx={{ m: 4, p: 4 }}>
         <Typography 
@@ -238,7 +241,7 @@ const Profile = () => {
                 endIcon = {<CancelIcon/>}
                 sx={{ mt: 3, mb: 2 }}
                 onClick={() => {
-                  history.push("/userinfo")
+                  history.push("/userinfo/" + profile.uid)
                 }}>
                 キャンセル
               </Button>
@@ -246,8 +249,10 @@ const Profile = () => {
           </Grid>
         </Box>
       </Paper>
+      <br/>
+      </Box>
     </Container>
-  );
-};
+  )
+}
 
 export default Profile;

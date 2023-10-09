@@ -25,7 +25,8 @@ export default function ButtonAppBar(props) {
   // アバターアイコンがクリックされた時
   const handleClickAvatar = (event) =>{
     setAnchorEl(event.currentTarget)
-    history.push("/userinfo")
+    console.log(profile.uid)
+    history.push("/userinfo/" + profile.uid)
   }
   
   // ログアウトクリック時の処理

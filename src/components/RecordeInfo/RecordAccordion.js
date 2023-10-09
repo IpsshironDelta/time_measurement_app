@@ -4,7 +4,8 @@ import React,
 import {Avatar ,
         Typography,
         Grid ,
-        Accordion ,}    from "@mui/material"
+        Accordion ,
+        Link}           from "@mui/material"
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon   from '@mui/icons-material/ExpandMore'
@@ -70,7 +71,13 @@ export default function BasicAccordion() {
                         <Grid item xs={11} align="right">
                             <Typography
                                 sx = {{p : 1,
-                                    fontSize: 14,}}>{item.userName}</Typography>
+                                    fontSize: 14,}}>
+                                <Link 
+                                    href={`/userinfo/${item.uid}`} 
+                                    color="#000000"
+                                    underline="hover">
+                                    {item.userName}
+                                  </Link></Typography>
                         </Grid>
                         <Grid item xs={1} align="left">
                             <Avatar 

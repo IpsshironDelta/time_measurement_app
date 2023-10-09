@@ -1,6 +1,6 @@
 import React, 
      { useState , 
-       useEffect}         from 'react'
+       useEffect}           from 'react'
 import { Avatar,
         Paper,
         Typography,
@@ -10,18 +10,24 @@ import { Avatar,
         Container,
         Grid , 
         Tabs ,
-        Tab , }           from "@mui/material"
-import { useHistory }     from "react-router-dom"
-import Header             from "../../Header"
-import { styled }         from '@mui/material/styles'
+        Tab , }             from "@mui/material"
+import { useHistory }       from "react-router-dom"
+import Header               from "../../Header"
+import { styled }           from '@mui/material/styles'
+import TableRow             from '@mui/material/TableRow'
+import TaskIcon             from '@mui/icons-material/Task'
+import EditIcon             from '@mui/icons-material/Edit';
+import useUser              from "../hooks/getuseAuth"
+import useProfile           from "../hooks/useProfile"
+import HomeIcon             from '@mui/icons-material/Home';
+import store                from '../../store'
+import { firebaseApp ,
+        db }                from "../../firebase"
+import {collection,
+        addDoc,
+        getDocs}            from 'firebase/firestore'
 import TableCell, 
-     { tableCellClasses } from '@mui/material/TableCell'
-import TableRow           from '@mui/material/TableRow'
-import TaskIcon           from '@mui/icons-material/Task'
-import {firebaseApp ,}    from "../../firebase"
-import useUser            from "../hooks/getuseAuth"
-import useProfile         from "../hooks/useProfile"
-import store from '../../store'
+        { tableCellClasses } from '@mui/material/TableCell'
 
 ////////////////////////////////////////////
 //　定数
@@ -87,19 +93,48 @@ function UserInfo(data) {
   const [image, setImage] = useState()
   const [error, setError] = useState(false)
   const [success , setSuccess] = useState(false)
+  const [userinfo  ,  setUserInfo]  =  useState()  // ユーザー情報を代入
   const firestorage = firebaseApp.firestorage
   const firestore = firebaseApp.firestore
   const { user } = useUser()
   const profileData = useProfile()
   const profile = profileData.profile
+  const UserInfoAry = []
+
+  // pathnameからuidを取得
+  const uidAry = window.location.pathname.split("/")
+  const getuid = uidAry[2]
 
   // 初回起動時
   useEffect(() => {
+    // ユーザー情報を取得する
+    fechUserData()
   },[])
+
+  // ユーザー情報を取得する
+  const fechUserData = () => {
+    const firestore = firebaseApp.firestore
+    console.log("uid => ",getuid)
+
+    getDocs(collection(db, "users" )).then((querySnapshot)=>{
+      querySnapshot.forEach((document) => {        
+        if (getuid == document.data().uid){
+          console.log("一致！ => ", document.data())
+          UserInfoAry.push({
+            ...document.data(),
+          })  
+        }
+      })
+    }).then(()=>{
+      setUserInfo([...UserInfoAry])
+    })
+    console.log("UserInfoAry => " , UserInfoAry)
+  }
 
   // 編集ボタンクリック時の処理
   const handleClickEdit = () =>{
-    store.getState().userName = profile.name
+    store.getState().userName     = profile.name
+    store.getState().loginUserUID = profile.uid
   }
 
   const history = useHistory()
@@ -109,75 +144,82 @@ function UserInfo(data) {
         <Box sx={{ flexGrow: 1,
                    bgcolor: '#f5f5f5' }}>
         <Header/>
-        <Grid container spacing={2}>
-          <Grid item xs={12} align="center">
-            <Typography variant="h4">マイページ</Typography >
-          </Grid>
+        <Paper sx={{ m: 4, p: 4 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} align="center">
+              <Typography variant="h4">マイページ</Typography >
+            </Grid>
 
-          {/* データ表示領域 */}
-          <Grid item xs={1} align="center"></Grid>
-          <Grid item xs={10} align="center">
-            <Typography 
-              sx = {{ fontSize: 18 ,
-                backgroundColor : "#f5f5f5",
-                color : "#000000",}}>
-              ニックネーム
-            </Typography>
-            {/* ニックネーム表示 */}
-            <Typography 
-              align="left"
-              sx={{ p: 1, 
-                    fontSize: 14 , 
-                    background: "#f5f5f5" ,
-                    borderTop    : "solid #6495ed 2px",
-                    borderBottom : "solid #6495ed 2px",
-                    borderLeft   : "solid #6495ed 2px",
-                    borderRight  : "solid #6495ed 2px",
-                    borderRadius : 5,
-                    color:"#6495ed",
-                    borderRadius : 3,}}>
-              {name ? name : profile ? profile.name : ""}
-            </Typography>
-          </Grid>
-          <Grid item xs={1} align="center"></Grid>
+            {/* データ表示領域 */}
+            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={10} align="center">
+              <Typography 
+                sx = {{ fontSize: 18 ,
+                  color : "#000000",}}>
+                ニックネーム
+              </Typography>
+              {/* ニックネーム表示 */}
+              <Typography 
+                align="left"
+                sx={{ p: 1, 
+                      fontSize: 14 , 
+                      background: "#f5f5f5" ,
+                      borderTop    : "solid #6495ed 2px",
+                      borderBottom : "solid #6495ed 2px",
+                      borderLeft   : "solid #6495ed 2px",
+                      borderRight  : "solid #6495ed 2px",
+                      borderRadius : 5,
+                      color:"#6495ed",
+                      borderRadius : 3,}}>
+                {name ? name : userinfo ? userinfo[0].name : ""}
+              </Typography>
+            </Grid>
+            <Grid item xs={1} align="center"></Grid>
 
-          <Grid item xs={12} align="center">
-            <Typography 
-              sx = {{ fontSize: 18 ,
-                backgroundColor : "#f5f5f5",
-                color : "#000000",}}>
-              プロフィール画像
-            </Typography>
-            {/* アバター画像表示 */}
-            <Avatar
-              sx={{ width: 100, height: 100 }}
-              src={image ? URL.createObjectURL(image) : profile ? profile.image : ""} 
-              alt=""/>
-              <input
-                  id     = "image"
-                  type   = "file"
-                  accept = "image/*"
-                  style  = {{ display: "none" }}/>
-            <br/>
-          </Grid>
+            <Grid item xs={12} align="center">
+              <Typography 
+                sx = {{ fontSize: 18 ,
+                  color : "#000000",}}>
+                プロフィール画像
+              </Typography>
+              {/* アバター画像表示 */}
+              <Avatar
+                sx={{ width: 100, height: 100 }}
+                src={image ? URL.createObjectURL(image) : userinfo ? userinfo[0].image : ""} 
+                alt=""/>
+                <input
+                    id     = "image"
+                    type   = "file"
+                    accept = "image/*"
+                    style  = {{ display: "none" }}/>
+              <br/>
+            </Grid>
 
-          {/* ボタン表示領域 */}
-          <Grid item xs={6} align="center">
-            <Button
+            {/* ボタン表示領域 */}
+            <Grid item xs={6} align="center">
+              {/* 自身のプロフィール画面を表示している場合は、編集ボタンを表示する */}
+              {profile && profile.uid === getuid ?
+              <Button
                 variant="contained"
                 onClick  = {() => {
-                    handleClickEdit()
-                    history.push("/userinfo/edit")}}
-                endIcon={<TaskIcon />}>ユーザー情報を編集する</Button>
-          </Grid>
-          <Grid item xs={6} align="center">
-            <Button
+                  handleClickEdit()
+                  history.push("/userinfo/" + profile.uid + "/edit")}}
+                endIcon={<EditIcon />}>ユーザー情報を編集</Button> : 
+              <Button
+                variant="contained"
+                onClick  = {() => {
+                    history.push("/")}}
+                endIcon={<HomeIcon />}>ホーム</Button>}
+            </Grid>
+            <Grid item xs={6} align="center">
+              <Button
                 variant="contained"
                 onClick  = {() => {
                     history.push("/recordinfo")}}
-                endIcon={<TaskIcon />}>過去の記録を確認する</Button>
+                endIcon={<TaskIcon />}>過去の記録を確認</Button>
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
         <br/>
       </Box>
     </Container>

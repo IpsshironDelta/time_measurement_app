@@ -48,12 +48,12 @@ function App() {
         </Route>
 
         {/* ユーザー情報確認画面 */}
-        <Route exact path="/userinfo">
+        <Route exact path="/userinfo/:id">
           <UserInfo />
         </Route>
 
         {/* ユーザー情報編集画面 */}
-        <Route exact path="/userinfo/edit">
+        <Route exact path="/userinfo/:id/edit">
           <UserInfoEdit />
         </Route>
       

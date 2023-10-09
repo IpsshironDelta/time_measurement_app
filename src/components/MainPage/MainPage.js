@@ -7,7 +7,8 @@ import { Alert ,
        Grid,
        Container ,
        TextField , 
-       Button, }                 from "@mui/material"
+       Button,
+       Paper , }                 from "@mui/material"
 import {collection,
         addDoc,
         getDocs}                 from 'firebase/firestore'
@@ -254,117 +255,120 @@ function MainPage() {
     <Container maxWidth="sm">
       <Box sx={{ flexGrow: 1,
                    bgcolor: '#f5f5f5' }}>
-        <Header info = {userinfo}/>
-        <Grid container spacing={2}>
-          {/* タイトル表示領域 */}
-          <Grid item xs={12} align="center">
-            <br/>
-            <Typography variant="h4">ストップウォッチ</Typography >
-            <Typography variant="h4">{time}</Typography >
-          </Grid>
-          <Grid item xs={6} align="center">
-            <Typography 
-              sx = {{
-                fontSize      : 16,
-              }}>測定日：{nowYear}年{nowMonth}月{nowDay}日</Typography>
-          </Grid>
-          <Grid item xs={6} align="center">
-            {userinfo ? (userinfo.map((item) => (
+        <Header/>
+        <Paper sx={{ m: 4, p: 4 }}>
+          <Grid container spacing={2}>
+            {/* タイトル表示領域 */}
+            <Grid item xs={12} align="center">
+              <br/>
+              <Typography variant="h4">ストップウォッチ</Typography >
+              <Typography variant="h4">{time}</Typography >
+            </Grid>
+            <Grid item xs={6} align="center">
               <Typography 
                 sx = {{
                   fontSize      : 16,
-                }}>ユーザー：{item.name}</Typography>  
-            )))
-            :
-              <Typography 
-                sx = {{
-                  fontSize      : 16,
-                }}>ユーザー：</Typography>}
-          </Grid>
+                }}>測定日：{nowYear}年{nowMonth}月{nowDay}日</Typography>
+            </Grid>
+            <Grid item xs={6} align="center">
+              {userinfo ? (userinfo.map((item) => (
+                <Typography 
+                  sx = {{
+                    fontSize      : 16,
+                  }}>ユーザー：{item.name}</Typography>  
+              )))
+              :
+                <Typography 
+                  sx = {{
+                    fontSize      : 16,
+                  }}>ユーザー：</Typography>}
+            </Grid>
 
-          {/* 業務を選択 */}
-          <Grid item xs={1} align="center"></Grid>
-          <Grid item xs={5} align="center">
-            <WorkSelect
-              id        = "WorkSelect"
-              label     = "業務を選択"
-              value     = {work}
-              onChange  ={(e) =>
-                setWork(e.target.value)}/>
-          </Grid>
-          <Grid item xs={5} align="center">
-            <NumberSelect
-              id        = "NumberSelect"
-              label     = "個数を選択"
-              value     = {number}
-              onChange  ={(e) =>
-                setNumber(e.target.value)}/>
-          </Grid>
-          <Grid item xs={1} align="center"></Grid>
+            {/* 業務を選択 */}
+            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={5} align="center">
+              <WorkSelect
+                id        = "WorkSelect"
+                label     = "業務を選択"
+                value     = {work}
+                onChange  ={(e) =>
+                  setWork(e.target.value)}/>
+            </Grid>
+            <Grid item xs={5} align="center">
+              <NumberSelect
+                id        = "NumberSelect"
+                label     = "個数を選択"
+                value     = {number}
+                onChange  ={(e) =>
+                  setNumber(e.target.value)}/>
+            </Grid>
+            <Grid item xs={1} align="center"></Grid>
 
-          {/* 業務メモ入力領域 */}
-          <Grid item xs={1} align="center"></Grid>
-          <Grid item xs={10} align="center">
-            <TextField
-              label        = "メモを入力"
-              defaultValue = ""
-              value        = {memo}
-              rows         = {5}
-              multiline
-              fullWidth
-              onChange={(e) => 
-                setMemo(e.target.value)} />
-          </Grid>
-          <Grid item xs={1} align="center"></Grid>
+            {/* 業務メモ入力領域 */}
+            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={10} align="center">
+              <TextField
+                label        = "メモを入力"
+                defaultValue = ""
+                value        = {memo}
+                rows         = {5}
+                multiline
+                fullWidth
+                onChange={(e) => 
+                  setMemo(e.target.value)} />
+            </Grid>
+            <Grid item xs={1} align="center"></Grid>
 
-          {/* ボタン表示領域 */}
-          <Grid item xs={4} align="center">
-            <Button
-              variant="contained"
-              disabled = {startStatus}
-              onClick={handleStart}
-              endIcon={<PlayCircleFilledWhiteIcon />}>Start</Button>
-          </Grid>
-          <Grid item xs={4} align="center">
-            <Button
-              variant="contained"
-              disabled = {stoptStatus}
-              onClick={handleStop}
-              endIcon={<StopCircleIcon />}>Stop</Button>
-          </Grid>
-          <Grid item xs={4} align="center">
-            <Button
-              variant="outlined"
-              disabled = {resettStatus}
-              onClick={handleReset}
-              endIcon={<RestartAltIcon />}>Reset</Button>
-          </Grid>
-          <Grid item xs={6} align="center">
-            <Button
-              variant="contained"
-              disabled = {saveStatus}
-              onClick= {() => {
-                handleSave()
-              }}
-              endIcon={<SaveAltIcon />}>業務記録を保存</Button>
-          </Grid>
-          <Grid item xs={6} align="center">
-            <Button
-              variant="contained"
-              disabled = {recordStatus}
-              onClick  = {() => {
-                handleRecord()
-                history.push("/recordinfo")}}
-              endIcon={<TaskIcon />}>過去の記録を確認</Button>
-          </Grid>
+            {/* ボタン表示領域 */}
+            <Grid item xs={4} align="center">
+              <Button
+                variant="contained"
+                disabled = {startStatus}
+                onClick={handleStart}
+                endIcon={<PlayCircleFilledWhiteIcon />}>Start</Button>
+            </Grid>
+            <Grid item xs={4} align="center">
+              <Button
+                variant="contained"
+                disabled = {stoptStatus}
+                onClick={handleStop}
+                endIcon={<StopCircleIcon />}>Stop</Button>
+            </Grid>
+            <Grid item xs={4} align="center">
+              <Button
+                variant="outlined"
+                disabled = {resettStatus}
+                onClick={handleReset}
+                endIcon={<RestartAltIcon />}>Reset</Button>
+            </Grid>
+            <Grid item xs={6} align="center">
+              <Button
+                variant="contained"
+                disabled = {saveStatus}
+                onClick= {() => {
+                  handleSave()
+                }}
+                endIcon={<SaveAltIcon />}>業務記録を保存</Button>
+            </Grid>
+            <Grid item xs={6} align="center">
+              <Button
+                variant="contained"
+                disabled = {recordStatus}
+                onClick  = {() => {
+                  handleRecord()
+                  history.push("/recordinfo")}}
+                endIcon={<TaskIcon />}>過去の記録を確認</Button>
+            </Grid>
 
-          {/* 入力不備がある場合はアラートを出す */}
-          {/* 登録が成功した場合もアラートを出す */}
-          <Grid item xs={12} align="center">
-            {error && <Alert severity="error">{errormessage}</Alert>}
-            {success && <Alert severity="success">{successmessage}</Alert>}
+            {/* 入力不備がある場合はアラートを出す */}
+            {/* 登録が成功した場合もアラートを出す */}
+            <Grid item xs={12} align="center">
+              {error && <Alert severity="error">{errormessage}</Alert>}
+              {success && <Alert severity="success">{successmessage}</Alert>}
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
+        <br/>
       </Box>
     </Container>
   );
