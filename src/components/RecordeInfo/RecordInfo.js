@@ -1,6 +1,4 @@
-import React, 
-     { useState , 
-       useEffect}         from 'react'
+import React              from 'react'
 import Button             from '@mui/material/Button'
 import Grid               from '@mui/material/Grid'
 import Box                from '@mui/material/Box'
@@ -9,20 +7,11 @@ import Typography         from '@mui/material/Typography'
 import { useHistory }     from "react-router-dom";
 import Header             from "../../Header"
 import { styled }         from '@mui/material/styles';
-import Table              from '@mui/material/Table';
-import TableBody          from '@mui/material/TableBody';
 import TableCell, 
      { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer     from '@mui/material/TableContainer';
-import TableHead          from '@mui/material/TableHead';
 import TableRow           from '@mui/material/TableRow';
 import Paper              from '@mui/material/Paper';
 import TaskIcon           from '@mui/icons-material/Task';
-
-import { db }             from '../../firebase'
-import {collection,
-        getDocs ,}        from 'firebase/firestore'
-import { firebaseApp }    from "../../firebase"
 import Accordion          from "./RecordAccordion"
 
 ////////////////////////////////////////////
@@ -87,7 +76,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function 記録表示(data) {
   // ------------------入力系変数------------------
-  const history = useHistory()
+  const history           = useHistory()
 
   return (
       <Container maxWidth="sm">

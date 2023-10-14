@@ -140,7 +140,7 @@ function MainPage() {
     // 結果をフォーマット
     const resultMinutes = Math.floor(resultInMilliseconds / (60 * 1000));
     const resultSeconds = Math.floor((resultInMilliseconds % (60 * 1000)) / 1000);
-    const resultMilliseconds = resultInMilliseconds % 1000;
+    const resultMilliseconds = (resultInMilliseconds % 1000).toFixed(0)
 
     // 結果を文字列にフォーマット
     const resultString = `${resultMinutes.toString().padStart(2, '0')}:${resultSeconds.toString().padStart(2, '0')}.${resultMilliseconds.toString().padStart(3, '0')}`;

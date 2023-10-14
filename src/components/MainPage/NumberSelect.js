@@ -12,10 +12,11 @@ export default function BasicSelect(props) {
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">個数を選択</InputLabel>
         <Select
-          id        = {props.id}
-          value     = {props.value}
-          label     = {props.label}
-          onChange  = {props.onChange}>
+          id           = {props.id}
+          value        = {props.value}
+          label        = {props.label}
+          defaultValue = {props.defaultValue}
+          onChange     = {props.onChange}>
             <MenuItem value="1">1</MenuItem>
             <MenuItem value="2">2</MenuItem>
             <MenuItem value="3">3</MenuItem>

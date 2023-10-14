@@ -13,6 +13,7 @@ const initialState = {
   loginUserUID   : "" , // UID
   loginUserEmail : "" , // メールアドレス
   imageURL       : "" , // アイコンのURL
+  RecordInfo     : "" , // 業務記録
 };
 
 const reducer = (state = initialState ,action) => {

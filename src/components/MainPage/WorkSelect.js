@@ -10,12 +10,12 @@ export default function BasicSelect(props) {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">業務を選択</InputLabel>
+        <InputLabel id="demo-simple-select-label">業務</InputLabel>
         <Select
-          id        = {props.id}
-          value     = {props.value}
-          label     = {props.label}
-          onChange  = {props.onChange}>
+          id           = {props.id}
+          value        = {props.value}
+          label        = {props.label}
+          onChange     = {props.onChange}>
             <MenuItem value="入庫">入庫</MenuItem>
             <MenuItem value="棚卸">棚卸</MenuItem>
             <MenuItem value="出荷">出荷</MenuItem>
