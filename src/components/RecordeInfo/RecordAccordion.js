@@ -20,6 +20,7 @@ import DeleteIcon       from '@mui/icons-material/Delete'
 import FilterListIcon   from '@mui/icons-material/FilterList'
 import EditIcon         from '@mui/icons-material/Edit'
 import SystemUpdateIcon from '@mui/icons-material/SystemUpdate'
+import ClearIcon        from '@mui/icons-material/Clear';
 import { useHistory }   from "react-router-dom"
 import { db }           from '../../firebase'
 import {doc ,
@@ -69,6 +70,14 @@ export default function BasicAccordion(props) {
     // ボタンがクリックされたときの処理
     // この例ではAccordionを展開しないように何もしません
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
+  }
+
+  // クリアボタンクリックの処理
+  const handleClickClear = () => {
+    setSelectUser("")
+    setSelectWork("")
+    // 業務記録データを取得
+    fechRecordData()
   }
 
   // 絞り込みボタンクリック時の処理
@@ -232,23 +241,29 @@ export default function BasicAccordion(props) {
         <Grid container spacing={1}>
             <Grid item xs={4} align="center">
                 <WorkSelect
-                id = "selectwork"
-                label = "業務を選択"
-                value = {selectwork}
-                onChange = {(e) =>
-                    setSelectWork(e.target.value)}/>
+                    id = "selectwork"
+                    label = "業務を選択"
+                    value = {selectwork}
+                    onChange = {(e) =>
+                        setSelectWork(e.target.value)}/>
             </Grid>
             <Grid item xs={4} align="center">
                 <UserSelect
-                value = {selectuser}
-                onChange = {(e) => 
-                    setSelectUser(e.target.value)}/>
+                    value = {selectuser}
+                    onChange = {(e) => 
+                        setSelectUser(e.target.value)}/>
             </Grid>
             <Grid item xs={4} align="center">
                 <Button
-                variant='contained'
-                endIcon={<FilterListIcon />}
-                onClick={handleClick}>絞り込む</Button>
+                    sx      = {{width : "120px"}}
+                    variant = 'contained'
+                    endIcon = {<FilterListIcon />}
+                    onClick = {handleClick}>絞り込む</Button>
+                <Button
+                    sx      = {{width : "120px"}}
+                    variant = 'outlined'
+                    endIcon = {<ClearIcon/>}
+                    onClick = {handleClickClear}>クリア</Button>
             </Grid>
         </Grid>
         <br/>
