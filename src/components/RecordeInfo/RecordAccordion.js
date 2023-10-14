@@ -21,6 +21,7 @@ import FilterListIcon   from '@mui/icons-material/FilterList'
 import EditIcon         from '@mui/icons-material/Edit'
 import SystemUpdateIcon from '@mui/icons-material/SystemUpdate'
 import ClearIcon        from '@mui/icons-material/Clear';
+import RefreshIcon      from '@mui/icons-material/Refresh';
 import { useHistory }   from "react-router-dom"
 import { db }           from '../../firebase'
 import {doc ,
@@ -33,6 +34,7 @@ import useProfile       from "../hooks/useProfile"
 import WorkSelect       from "../MainPage/WorkSelect"
 import NumberSelect     from "../MainPage/NumberSelect"
 import UserSelect       from "./UserSelect"
+import store            from '../../store'
 
 ////////////////////////////////////////////
 //　定数
@@ -50,6 +52,7 @@ export default function BasicAccordion(props) {
   const [selectuser , setSelectUser] = useState("")    // 絞り込みするユーザー名を格納
   const [selectwork , setSelectWork] = useState("")    // 絞り込みする業務を格納
   const [open       , setOpen]       = useState(false)
+  const [avarage    , setAvarate]    = useState("")    // 平均値を代入
   const RecordDataAry = []
   const history       = useHistory()
   const profileData   = useProfile()
@@ -66,9 +69,8 @@ export default function BasicAccordion(props) {
     fechRecordData()
   },[])
 
+  // ユーザーリンククリック時の処理
   const handleButtonClick = (event , getID) => {
-    // ボタンがクリックされたときの処理
-    // この例ではAccordionを展開しないように何もしません
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
 
@@ -171,22 +173,27 @@ export default function BasicAccordion(props) {
         return
     }
 
+    // 平均値を算出
+    handleAvarage(getStatus)
+
     // メモが入力されているか確認する
-    if(memo === ""){
+    if(memo == ""){
         updateDoc(userRef , {
-            work  : work ,
-            num   : number ,
-            memo  : getStatus.memo,
+            work    : work ,
+            num     : number ,
+            memo    : getStatus.memo,
+            avarage : store.getState().avarage,
         })    
     }else{
         updateDoc(userRef , {
-            work  : work ,
-            num   : number ,
-            memo  : memo,
+            work    : work ,
+            num     : number ,
+            memo    : memo,
+            avarage : store.getState().avarage,
         })    
     }
 
-     // 業務記録データを再取得する
+    // 業務記録データを再取得する
     fechRecordData()
     // 初期化
     setWork("")
@@ -195,6 +202,37 @@ export default function BasicAccordion(props) {
     setEdit(false)
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
+    
+  // 平均値を算出
+  const handleAvarage = (event) => {
+    // 元の時間文字列
+    const timeString = event.time
+
+    // ":" と "." を使って時間をパースし、ミリ秒に変換
+    const parts = timeString.split(/[:.]/);
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+    const milliseconds = parseInt(parts[2], 10);
+    const totalTimeInMilliseconds = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
+
+    // ミリ秒を個数で割る
+    const resultInMilliseconds = totalTimeInMilliseconds / number;
+
+    // 結果をフォーマット
+    const resultMinutes = Math.floor(resultInMilliseconds / (60 * 1000));
+    const resultSeconds = Math.floor((resultInMilliseconds % (60 * 1000)) / 1000);
+    const resultMilliseconds = (resultInMilliseconds % 1000).toFixed(0)
+
+    // 結果を文字列にフォーマット
+    const resultString = `${resultMinutes.toString().padStart(2, '0')}:${resultSeconds.toString().padStart(2, '0')}.${resultMilliseconds.toString().padStart(3, '0')}`;
+
+    console.log("計測結果：",event.time); // 結果をコンソールに表示
+    console.log("個数：",number); // 結果をコンソールに表示
+    console.log("平均値：",resultString); // 結果をコンソールに表示
+    store.getState().avarage = resultString
+    setAvarate(resultString)
+
+    }
 
   // ダイアログのキャンセルボタンクリック所の処理
   const handleClose = () => {
@@ -237,6 +275,18 @@ export default function BasicAccordion(props) {
 
     return (
     <div>
+        {/* 再読み込みボタン表示領域 */}
+        <Grid container spacing={1}>
+            <Grid item xs={12} align="center">
+                <Button
+                    sx      = {{width : "150px"}}
+                    variant = 'contained'
+                    endIcon = {<RefreshIcon />}
+                    onClick = {fechRecordData}>再読み込み</Button>
+            </Grid>
+        </Grid>
+        <br/>
+
         {/* 絞り込み設定表示領域 */}
         <Grid container spacing={1}>
             <Grid item xs={4} align="center">
