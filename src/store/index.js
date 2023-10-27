@@ -14,6 +14,7 @@ const initialState = {
   loginUserEmail : "" , // メールアドレス
   imageURL       : "" , // アイコンのURL
   RecordInfo     : "" , // 業務記録
+  gyoumuID       : "" , // 業務用ID
 };
 
 const reducer = (state = initialState ,action) => {
