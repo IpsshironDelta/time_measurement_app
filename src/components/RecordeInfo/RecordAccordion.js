@@ -154,6 +154,7 @@ export default function BasicAccordion(props) {
     setWork("")
     setNumber("")
     setMemo("")
+    setGyoumuID("")
     setEdit(false)
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
@@ -212,12 +213,30 @@ export default function BasicAccordion(props) {
         })    
     }
 
+    // 業務IDが入力されているか確認する
+    if(gyoumuID == ""){
+        updateDoc(userRef , {
+            work    : work ,
+            num     : number ,
+            gyoumuID: getStatus.gyoumuID,
+            avarage : store.getState().avarage,
+        })    
+    }else{
+        updateDoc(userRef , {
+            work    : work ,
+            num     : number ,
+            gyoumuID: gyoumuID,
+            avarage : store.getState().avarage,
+        })    
+    }
+
     // 業務記録データを再取得する
     fechRecordData()
     // 初期化
     setWork("")
     setNumber("")
     setMemo("")
+    setGyoumuID("")
     setEdit(false)
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
@@ -298,7 +317,7 @@ export default function BasicAccordion(props) {
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
                 <Button
-                    sx      = {{width : "150px"}}
+                    sx      = {{width : "155px"}}
                     variant = 'contained'
                     endIcon = {<RefreshIcon />}
                     onClick = {fechRecordData}>再読み込み</Button>
@@ -357,35 +376,6 @@ export default function BasicAccordion(props) {
                             aria-controls="panel1a-content"
                             id="panel1a-header"> */}
                             <Grid container spacing={0}>
-                                {/* 自身の記録のみ編集/削除が可能 */}
-                                {profile && item.uid === profile.uid ?
-                                    <Grid item xs={12} align="left">
-                                        {edit ? 
-                                        <InputIDTextField
-                                            id       = "gyoumuID"
-                                            label    = "業務IDを入力"
-                                            type     = "gyoumuID"
-                                            value    = {gyoumuID}
-                                            helperText="入力必須"
-                                            sx={{
-                                                '& .MuiInputBase-input': {
-                                                height : "40px",
-                                                padding: 0, // セル内の余白を削除
-                                                },
-                                            }}
-                                            onChange = {handleInputID}/>
-                                                :
-                                            <Typography
-                                                sx = {{
-                                                    fontSize: 14,}}>ID：{item.gyoumuID}</Typography>}
-                                    </Grid>
-                                    :
-                                    <Grid item xs={4} align="left">
-                                        <Typography
-                                            sx = {{
-                                                fontSize: 14,}}>ID：{item.gyoumuID}</Typography>
-                                    </Grid>}
-
                                 <Grid item xs={12} align="left">
                                     <Typography 
                                         sx = {{
@@ -413,7 +403,7 @@ export default function BasicAccordion(props) {
                                                 helperText="入力必須"
                                                 sx={{
                                                     '& .MuiInputBase-input': {
-                                                    height : "40px",
+                                                    height : "55px",
                                                     padding: 0, // セル内の余白を削除
                                                     },
                                                 }}
@@ -432,7 +422,36 @@ export default function BasicAccordion(props) {
 
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {profile && item.uid === profile.uid ?
-                                    <Grid item xs={12} align="left">
+                                    <Grid item xs={2} align="left">
+                                        {edit ? 
+                                        <InputIDTextField
+                                            id       = "gyoumuID"
+                                            label    = "業務IDを入力"
+                                            type     = "gyoumuID"
+                                            value    = {gyoumuID}
+                                            helperText="入力必須"
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                height : "55px",
+                                                padding: 0, // セル内の余白を削除
+                                                },
+                                            }}
+                                            onChange = {handleInputID}/>
+                                                :
+                                            <Typography
+                                                sx = {{
+                                                    fontSize: 14,}}>ID：{item.gyoumuID}</Typography>}
+                                    </Grid>
+                                    :
+                                    <Grid item xs={2} align="left">
+                                        <Typography
+                                            sx = {{
+                                                fontSize: 14,}}>ID：{item.gyoumuID}</Typography>
+                                    </Grid>}
+
+                                {/* 自身の記録のみ編集/削除が可能 */}
+                                {profile && item.uid === profile.uid ?
+                                    <Grid item xs={10} align="left">
                                         {edit ? 
                                             <WorkSelect
                                                 id           = "WorkSelect"
@@ -446,7 +465,7 @@ export default function BasicAccordion(props) {
                                                     fontSize: 14,}}>業務：{item.work}</Typography>}
                                     </Grid>
                                     :
-                                    <Grid item xs={12} align="left">
+                                    <Grid item xs={10} align="left">
                                         <Typography
                                             sx = {{
                                                 fontSize: 14,}}>業務：{item.work}</Typography>
