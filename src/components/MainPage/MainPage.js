@@ -17,6 +17,8 @@ import { firebaseApp ,
 import store                     from '../../store';
 import WorkSelect                from "./WorkSelect"
 import NumberSelect              from "./NumberSelect"
+import NumberTextFild            from "./NumberTextField"
+import InputIDTextFild           from "./NumberTextField"
 import Header                    from "../../Header"
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 import StopCircleIcon            from '@mui/icons-material/StopCircle';
@@ -54,6 +56,7 @@ function MainPage() {
   const [number       , setNumber]         = useState("")    // 個数を代入
   const [work         , setWork]           = useState("")    // 業務内容を代入
   const [memo         , setMemo]           = useState("")    // メモを代入
+  const [inputid      , setInputID]        = useState("")    // IDを代入
   const [avarage      , setAvarate]        = useState("")    // 平均値を代入
   const now         = new Date()          // 本日の日付を取得
   const nowYear     = now.getFullYear()   // 本日の年を取得
@@ -184,6 +187,7 @@ function MainPage() {
     store.getState().number       = number
     store.getState().memo         = memo
     store.getState().record       = time
+    store.getState().gyoumuID     = inputid
     // 平均値を算出
     handleAvarage()
 
@@ -200,6 +204,7 @@ function MainPage() {
         avarage  : store.getState().avarage,
         uid      : userinfo[0].uid  ,
         image    : userinfo[0].image,
+        gyoumuID : inputid          ,
       })
       console.log("firestoreに登録が完了しました。")
       setSuccessmessage("記録を保存しました。")
@@ -207,12 +212,29 @@ function MainPage() {
       setMemo("")
       setWork("")
       setNumber("")
+      setInputID("")
       timeChange('00:00.000')
       elapsedTime = 0
     } catch (e) {
       console.log(e);
     }
   }
+
+  // 個数入力のテキストフィールドの値が変更されたときの処理
+  const handleChange = (event) => {
+    const newValue = event.target.value
+    if (newValue >= 1 && newValue <= 200) {
+      setNumber(newValue);
+    }
+  }
+
+  // ID入力のテキストフィールドの値が変更されたときの処理
+  const handleInputID = (event) => {
+    const newValue = event.target.value;
+    if (/^\d*$/.test(newValue) && newValue.length <= 4) {
+      setInputID(newValue);
+    }
+  };
 
   // startボタンクリック時の処理
   const handleStart = () => {
@@ -294,13 +316,34 @@ function MainPage() {
                 onChange  ={(e) =>
                   setWork(e.target.value)}/>
             </Grid>
+
+            {/* 個数を入力 */}
             <Grid item xs={5} align="center">
-              <NumberSelect
+              <NumberTextFild
+                id       = "InputNumber"
+                label    = "個数を入力(1～200まで)"
+                type     = "number"
+                value    = {number}
+                helperText="入力必須"
+                onChange = {handleChange}/>
+              {/* <NumberSelect
                 id        = "NumberSelect"
                 label     = "個数を選択"
                 value     = {number}
                 onChange  ={(e) =>
-                  setNumber(e.target.value)}/>
+                  setNumber(e.target.value)}/> */}
+            </Grid>
+            <Grid item xs={1} align="center"></Grid>
+            
+            {/* IDの入力領域 */}
+            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={10} align="center">
+              <InputIDTextFild
+                fullWidth 
+                id        = "InputID"
+                label     = "IDを入力(4桁まで)"
+                value     = {inputid}
+                onChange  ={handleInputID}/>
             </Grid>
             <Grid item xs={1} align="center"></Grid>
 

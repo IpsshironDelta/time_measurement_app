@@ -10,6 +10,7 @@ import Login              from "./components/Login/Login"
 import SignUp             from './components/SignUp/SignUp'
 import PasswordReset      from "./components/PasswordReset/PasswordReset"
 import DefaultUserSetting from "./components/DefaultUserSetting/DefaultUserSetting"
+import TEST from "./components/test/test"
 import './App.css';
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
         {/* ホーム画面 */}
         <Route exact path="/">
           <MainPage />
+        </Route>
+
+        {/* テスト画面 */}
+        <Route exact path="/test">
+          <TEST />
         </Route>
 
         {/* ログイン画面 */}
