@@ -11,7 +11,8 @@ import { Alert ,
        Paper , }                 from "@mui/material"
 import {collection,
         addDoc,
-        getDocs}                 from 'firebase/firestore'
+        getDocs,
+        Timestamp }              from 'firebase/firestore'
 import { firebaseApp ,
         db }                     from "../../firebase"
 import store                     from '../../store';
@@ -207,6 +208,7 @@ function MainPage() {
         uid      : userinfo[0].uid  ,
         image    : userinfo[0].image,
         gyoumuID : inputid          ,
+        createdAt: Timestamp.fromDate(new Date()),
       })
       console.log("firestoreに登録が完了しました。")
       setSuccessmessage("記録を保存しました。")

@@ -1,6 +1,8 @@
 import React, 
      { useState , 
-       useEffect}       from 'react'
+       useEffect ,
+       useRef ,
+       useLayoutEffect} from 'react'
 import {Avatar ,
         Typography,
         Grid ,
@@ -301,6 +303,9 @@ export default function BasicAccordion(props) {
                 })
         })
     }).then(()=>{
+      RecordDataAry.sort(function(a, b) {
+          return (a.createdAt > b.createdAt) ? -1 : 1;  //オブジェクトの降順ソート
+          })
       setRecord([...RecordDataAry])
     })
     console.log("初回配列取得 => ",RecordDataAry)
@@ -555,7 +560,7 @@ export default function BasicAccordion(props) {
             <Typography
                 sx = {{
                     fontSize: 16,}}>記録データはありません。</Typography>}
-        
+
         {/* 削除ボタンクリック時のダイアログ表示領域 */}
         <Dialog
             open={open}
