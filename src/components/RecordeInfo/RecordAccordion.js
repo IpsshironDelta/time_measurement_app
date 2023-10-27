@@ -33,6 +33,8 @@ import { firebaseApp }  from "../../firebase"
 import useProfile       from "../hooks/useProfile"
 import WorkSelect       from "../MainPage/WorkSelect"
 import NumberSelect     from "../MainPage/NumberSelect"
+import NumberTextFild   from "../MainPage/NumberTextField"
+import InputIDTextField from '../MainPage/InputIDTextField'
 import UserSelect       from "./UserSelect"
 import store            from '../../store'
 
@@ -48,6 +50,7 @@ export default function BasicAccordion(props) {
   const [memo       , setMemo]       = useState("")    // メモを代入
   const [work       , setWork]       = useState("")    // 業務内容を代入
   const [number     , setNumber]     = useState("")    // 個数を代入
+  const [gyoumuID   , setGyoumuID]   = useState("")    // 業務IDを代入
   const [edit       , setEdit]       = useState(false) // 編集状態
   const [selectuser , setSelectUser] = useState("")    // 絞り込みするユーザー名を格納
   const [selectwork , setSelectWork] = useState("")    // 絞り込みする業務を格納
@@ -68,6 +71,22 @@ export default function BasicAccordion(props) {
     // 業務記録データを取得
     fechRecordData()
   },[])
+
+  // 個数入力のテキストフィールドの値が変更されたときの処理
+  const handleChange = (event) => {
+      const newValue = event.target.value
+      if (newValue >= 1 && newValue <= 200) {
+          setNumber(newValue);
+      }
+  }
+
+  // ID入力のテキストフィールドの値が変更されたときの処理
+  const handleInputID = (event) => {
+    const newValue = event.target.value;
+    if (/^\d*$/.test(newValue) && newValue.length <= 4) {
+        setGyoumuID(newValue);
+    }
+  };
 
   // ユーザーリンククリック時の処理
   const handleButtonClick = (event , getID) => {
@@ -332,22 +351,131 @@ export default function BasicAccordion(props) {
             <Grid 
                 item xs={12} 
                 align="center">
-                <Accordion >
+                {/* <Accordion >
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1a-content"
-                            id="panel1a-header">
+                            id="panel1a-header"> */}
                             <Grid container spacing={0}>
-                                <Grid item xs={6} align="left">
+                                {/* 自身の記録のみ編集/削除が可能 */}
+                                {profile && item.uid === profile.uid ?
+                                    <Grid item xs={12} align="left">
+                                        {edit ? 
+                                        <InputIDTextField
+                                            id       = "gyoumuID"
+                                            label    = "業務IDを入力"
+                                            type     = "gyoumuID"
+                                            value    = {gyoumuID}
+                                            helperText="入力必須"
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                height : "40px",
+                                                padding: 0, // セル内の余白を削除
+                                                },
+                                            }}
+                                            onChange = {handleInputID}/>
+                                                :
+                                            <Typography
+                                                sx = {{
+                                                    fontSize: 14,}}>ID：{item.gyoumuID}</Typography>}
+                                    </Grid>
+                                    :
+                                    <Grid item xs={4} align="left">
+                                        <Typography
+                                            sx = {{
+                                                fontSize: 14,}}>ID：{item.gyoumuID}</Typography>
+                                    </Grid>}
+
+                                <Grid item xs={12} align="left">
                                     <Typography 
                                         sx = {{
-                                            fontSize: 16,}}>測定日：{item.date}</Typography>
+                                            fontSize: 18,}}>測定日：{item.date}</Typography>
                                 </Grid>
-                                <Grid item xs={6} align="left">
+                                <Grid item xs={4} align="left">
                                     <Typography
                                         sx = {{
-                                            fontSize: 16,}}>記録：{item.time}</Typography>
+                                            fontSize: 18,}}>記録：{item.time}</Typography>
                                 </Grid>
+                                <Grid item xs={4} align="left">
+                                    <Typography 
+                                        sx = {{
+                                            fontSize: 18,}}>平均値：{item.avarage}</Typography>
+                                </Grid>
+                                {/* 自身の記録のみ編集/削除が可能 */}
+                                {profile && item.uid === profile.uid ?
+                                    <Grid item xs={4} align="left">
+                                        {edit ? 
+                                            <NumberTextFild
+                                                id       = "InputNumber"
+                                                label    = "個数を入力"
+                                                type     = "number"
+                                                value    = {number}
+                                                helperText="入力必須"
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                    height : "40px",
+                                                    padding: 0, // セル内の余白を削除
+                                                    },
+                                                }}
+                                                onChange = {handleChange}/>
+                                                : 
+                                            <Typography
+                                                sx = {{
+                                                    fontSize: 18,}}>個数：{item.num}</Typography>}
+                                    </Grid>
+                                    :
+                                    <Grid item xs={4} align="left">
+                                        <Typography
+                                            sx = {{
+                                                fontSize: 18,}}>個数：{item.num}</Typography>
+                                    </Grid>}
+
+                                {/* 自身の記録のみ編集/削除が可能 */}
+                                {profile && item.uid === profile.uid ?
+                                    <Grid item xs={12} align="left">
+                                        {edit ? 
+                                            <WorkSelect
+                                                id           = "WorkSelect"
+                                                label        = "業務を選択"
+                                                value        = {work}
+                                                onChange     = {(e) =>
+                                                    setWork(e.target.value)}/>
+                                                : 
+                                            <Typography
+                                                sx = {{
+                                                    fontSize: 14,}}>業務：{item.work}</Typography>}
+                                    </Grid>
+                                    :
+                                    <Grid item xs={12} align="left">
+                                        <Typography
+                                            sx = {{
+                                                fontSize: 14,}}>業務：{item.work}</Typography>
+                                    </Grid>}
+
+                                {/* 自身の記録のみ編集/削除が可能 */}
+                                {profile && item.uid === profile.uid ?
+                                    <Grid item xs={12} align="left">
+                                        {edit ? 
+                                            <TextField
+                                                label        = "メモを入力"
+                                                value        = {memo ? memo : "" }
+                                                rows         = {5}
+                                                multiline
+                                                fullWidth
+                                                onChange={(e) => 
+                                                setMemo(e.target.value)}/>
+                                                : 
+                                            <Typography
+                                                sx = {{
+                                                    fontSize: 14,}}>メモ：{item.memo}</Typography>}
+                                    </Grid>
+                                    :
+                                    <Grid item xs={12} align="left">
+                                        <Typography
+                                            sx = {{
+                                                fontSize: 14,}}>メモ：{item.memo}</Typography>
+                                    </Grid>}
+
                                 <Grid item xs={3} align="right">
                                     {/* 自分が登録した記録の場合は、編集ボタンを表示する */}
                                     {/* editの状態により「編集」「更新」が切り替わる */}
@@ -400,81 +528,13 @@ export default function BasicAccordion(props) {
                                         alt="" />
                                 </Grid>
                             </Grid>
-                        </AccordionSummary>
+                        {/* </AccordionSummary>
                         <AccordionDetails>
                             <Grid container spacing={2}>
-                                {/* 自身の記録のみ編集/削除が可能 */}
-                                {profile && item.uid === profile.uid ?
-                                    <Grid item xs={4} align="left">
-                                        {edit ? 
-                                            <WorkSelect
-                                                id           = "WorkSelect"
-                                                label        = "業務を選択"
-                                                value        = {work}
-                                                onChange     = {(e) =>
-                                                    setWork(e.target.value)}/>
-                                                : 
-                                            <Typography
-                                                sx = {{
-                                                    fontSize: 14,}}>業務：{item.work}</Typography>}
-                                    </Grid>
-                                    :
-                                    <Grid item xs={4} align="left">
-                                        <Typography
-                                            sx = {{
-                                                fontSize: 14,}}>業務内容：{item.work}</Typography>
-                                    </Grid>}
-                                {/* 自身の記録のみ編集/削除が可能 */}
-                                {profile && item.uid === profile.uid ?
-                                    <Grid item xs={4} align="left">
-                                        {edit ? 
-                                            <NumberSelect
-                                                id           = "NumberSelect"
-                                                label        = "個数を選択"
-                                                value        = {number}
-                                                onChange     = {(e) =>
-                                                    setNumber(e.target.value)}/>
-                                                : 
-                                            <Typography
-                                                sx = {{
-                                                    fontSize: 14,}}>個数：{item.num}</Typography>}
-                                    </Grid>
-                                    :
-                                    <Grid item xs={4} align="left">
-                                        <Typography
-                                            sx = {{
-                                                fontSize: 14,}}>個数：{item.num}</Typography>
-                                    </Grid>}
-                                <Grid item xs={4} align="left">
-                                    <Typography 
-                                        sx = {{
-                                            fontSize: 14,}}>平均値：{item.avarage}</Typography>
-                                </Grid>
-                                {/* 自身の記録のみ編集/削除が可能 */}
-                                {profile && item.uid === profile.uid ?
-                                    <Grid item xs={12} align="left">
-                                        {edit ? 
-                                            <TextField
-                                                label        = "メモを入力"
-                                                value        = {memo ? memo : "" }
-                                                rows         = {5}
-                                                multiline
-                                                onChange={(e) => 
-                                                setMemo(e.target.value)}/>
-                                                : 
-                                            <Typography
-                                                sx = {{
-                                                    fontSize: 14,}}>メモ：{item.memo}</Typography>}
-                                    </Grid>
-                                    :
-                                    <Grid item xs={12} align="left">
-                                        <Typography
-                                            sx = {{
-                                                fontSize: 14,}}>メモ：{item.memo}</Typography>
-                                    </Grid>}
+
                             </Grid>
                         </AccordionDetails>
-                    </Accordion>
+                    </Accordion> */}
                 </Grid>
             </Grid>
         ))):
