@@ -176,6 +176,31 @@ function UserInfo(data) {
             </Grid>
             <Grid item xs={1} align="center"></Grid>
 
+            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={10} align="center">
+              <Typography 
+                sx = {{ fontSize: 18 ,
+                  color : "#000000",}}>
+                メールアドレス
+              </Typography>
+              {/* メールアドレス表示 */}
+              <Typography 
+                align="left"
+                sx={{ p: 1, 
+                      fontSize: 14 , 
+                      background: "#f5f5f5" ,
+                      borderTop    : "solid #6495ed 2px",
+                      borderBottom : "solid #6495ed 2px",
+                      borderLeft   : "solid #6495ed 2px",
+                      borderRight  : "solid #6495ed 2px",
+                      borderRadius : 5,
+                      color:"#6495ed",
+                      borderRadius : 3,}}>
+                {user ? user.email : ""}
+              </Typography>
+            </Grid>
+            <Grid item xs={1} align="center"></Grid>
+
             <Grid item xs={12} align="center">
               <Typography 
                 sx = {{ fontSize: 18 ,
