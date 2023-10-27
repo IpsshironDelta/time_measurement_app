@@ -4,7 +4,6 @@ import React,
 import {Avatar ,
         Typography,
         Grid ,
-        Accordion ,
         Link , 
         Button , 
         Dialog , 
@@ -13,9 +12,6 @@ import {Avatar ,
         DialogContentText , 
         DialogTitle ,
         TextField , }   from "@mui/material"
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon   from '@mui/icons-material/ExpandMore'
 import DeleteIcon       from '@mui/icons-material/Delete'
 import FilterListIcon   from '@mui/icons-material/FilterList'
 import EditIcon         from '@mui/icons-material/Edit'
@@ -32,7 +28,6 @@ import {doc ,
 import { firebaseApp }  from "../../firebase"
 import useProfile       from "../hooks/useProfile"
 import WorkSelect       from "../MainPage/WorkSelect"
-import NumberSelect     from "../MainPage/NumberSelect"
 import NumberTextFild   from "../MainPage/NumberTextField"
 import InputIDTextField from '../MainPage/InputIDTextField'
 import UserSelect       from "./UserSelect"
@@ -393,7 +388,7 @@ export default function BasicAccordion(props) {
                                 </Grid>
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {profile && item.uid === profile.uid ?
-                                    <Grid item xs={4} align="left">
+                                    <Grid item xs={4} align="center">
                                         {edit ? 
                                             <NumberTextFild
                                                 id       = "InputNumber"
@@ -414,7 +409,7 @@ export default function BasicAccordion(props) {
                                                     fontSize: 18,}}>個数：{item.num}</Typography>}
                                     </Grid>
                                     :
-                                    <Grid item xs={4} align="left">
+                                    <Grid item xs={4} align="center">
                                         <Typography
                                             sx = {{
                                                 fontSize: 18,}}>個数：{item.num}</Typography>

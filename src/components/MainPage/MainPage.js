@@ -62,6 +62,8 @@ function MainPage() {
   const nowYear     = now.getFullYear()   // 本日の年を取得
   const nowMonth    = now.getMonth() + 1  // 本日の月を取得
   const nowDay      = now.getDate()       // 本日の日を取得
+  const nowHour     = now.getHours();    // 時を取得
+  const nowMinute   = now.getMinutes();  // 分を取得
   const history     = useHistory()
   const profileData = useProfile()
   const profile     = profileData.profile
@@ -182,7 +184,7 @@ function MainPage() {
       console.log("メモが入力されていない")
       setMemo("-")
     }
-    store.getState().measurementDay = nowYear + "年" + nowMonth + "月" + nowDay + "日"
+    store.getState().measurementDay = nowYear + "年" + nowMonth + "月" + nowDay + "日　" + nowHour + "時" + nowMinute + "分"
     store.getState().selectWork   = work
     store.getState().number       = number
     store.getState().memo         = memo
