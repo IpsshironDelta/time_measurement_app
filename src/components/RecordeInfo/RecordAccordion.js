@@ -38,7 +38,8 @@ import store            from '../../store'
 ////////////////////////////////////////////
 //　定数
 ////////////////////////////////////////////
-const WorkTimeInfo = "WorkTimeInfo"
+const WorkTimeInfo  = "WorkTimeInfo"
+const AdminUserMail = "la.la.la.8316@docomo.ne.jp"
 
 export default function BasicAccordion(props) {
   // ------------------入力系変数------------------
@@ -51,6 +52,7 @@ export default function BasicAccordion(props) {
   const [edit       , setEdit]       = useState(false) // 編集状態
   const [selectuser , setSelectUser] = useState("")    // 絞り込みするユーザー名を格納
   const [selectwork , setSelectWork] = useState("")    // 絞り込みする業務を格納
+  const [loginUser  , setLogInUser]  = useState("")    // ログインユーザーの情報を格納
   const [open       , setOpen]       = useState(false)
   const [avarage    , setAvarate]    = useState("")    // 平均値を代入
   const RecordDataAry = []
@@ -67,6 +69,16 @@ export default function BasicAccordion(props) {
   useEffect(() => {
     // 業務記録データを取得
     fechRecordData()
+    // ログインユーザーの情報を取得
+    firebaseApp.fireauth.onAuthStateChanged(user => {
+    if (!user) {
+        console.log("ユーザー情報が無い")
+        }else{
+        console.log("user.uid => " , user.uid)
+        console.log("user.email => " , user.email)
+        setLogInUser(user)
+        }
+    })
   },[])
 
   // 個数入力のテキストフィールドの値が変更されたときの処理
@@ -496,9 +508,9 @@ export default function BasicAccordion(props) {
                                     </Grid>}
 
                                 <Grid item xs={3} align="right">
-                                    {/* 自分が登録した記録の場合は、編集ボタンを表示する */}
+                                    {/* ログインユーザーがAdminUserMailと一致している場合はすべての記録の編集が可能 */}
                                     {/* editの状態により「編集」「更新」が切り替わる */}
-                                    {profile && item.uid === profile.uid ?
+                                    {loginUser && AdminUserMail === loginUser.email ? 
                                     <Button
                                         sx = {{top : 10}}
                                         size='small'
@@ -510,12 +522,27 @@ export default function BasicAccordion(props) {
                                                 : 
                                                 handleClickEdit(event , item.id)}}>
                                             {edit ? "更新" : "編集"}</Button> 
+                                    /* 自分が登録した記録の場合は、編集ボタンを表示する */
+                                    /* editの状態により「編集」「更新」が切り替わる */
+                                    : profile && item.uid === profile.uid ? 
+                                    <Button
+                                    sx = {{top : 10}}
+                                    size='small'
+                                    variant={ edit ? "contained" : "outlined"}
+                                    endIcon={ edit ? <SystemUpdateIcon /> : <EditIcon />}
+                                    onClick={(event) => 
+                                        {edit ? 
+                                            handleClickUpDate(event ,item) 
+                                            : 
+                                            handleClickEdit(event , item.id)}}>
+                                        {edit ? "更新" : "編集"}</Button> 
                                     : ""}
                                 </Grid>
+
                                 <Grid item xs={3} align="left">
                                     {/* 自分が登録した記録の場合は、削除ボタンを表示する */}
                                     {/* editの状態により「削除」「キャンセル」が切り替わる */}
-                                    {profile && item.uid === profile.uid ?
+                                    {loginUser && AdminUserMail === loginUser.email ? 
                                         <Button
                                             sx = {{top : 10}}
                                             size='small'
@@ -527,7 +554,21 @@ export default function BasicAccordion(props) {
                                                 :
                                                     handleClickOpen(event , item.id)}}>
                                                 {edit ? "キャンセル" : "削除"}</Button>
-                                         : ""}
+                                    /* 自分が登録した記録の場合は、編集ボタンを表示する */
+                                    /* editの状態により「編集」「更新」が切り替わる */
+                                    : profile && item.uid === profile.uid ? 
+                                        <Button
+                                            sx = {{top : 10}}
+                                            size='small'
+                                            variant="outlined"
+                                            endIcon={edit ? "" : <DeleteIcon />}
+                                            onClick={(event) => 
+                                                {edit ? 
+                                                    handleClickChancel(event , item.id)
+                                                :
+                                                    handleClickOpen(event , item.id)}}>
+                                                {edit ? "キャンセル" : "削除"}</Button>
+                                    : ""}
                                 </Grid>
                                 <Grid item xs={5} align="right">
                                     <Typography
