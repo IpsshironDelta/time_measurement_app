@@ -21,8 +21,8 @@ import Header              from "./UserHeader"
 import { useHistory }      from "react-router-dom";
 
 const DefalutUserSetting = () => {
-  const [name    , setName]    = useState()
-  const [image   , setImage]   = useState()
+  const [name    , setName]    = useState("")
+  const [image   , setImage]   = useState("")
   const [error   , setError]   = useState(false)
   const [success , setSuccess] = useState(false)
   const firestorage = firebaseApp.firestorage
@@ -41,6 +41,8 @@ const DefalutUserSetting = () => {
 
   // 保存ボタンクリック時の処理
   const handleSubmit = async (event) => {
+    console.log("メアド",user.email)
+    console.log("名前",name)
     // ユーザー名が入力されているか判定する
     if(name ===""){
       console.log("ユーザー名が入力されていない")
@@ -52,11 +54,12 @@ const DefalutUserSetting = () => {
     setSuccess(false)
     try {
       const uid = user.uid
+      const email = user.email
       const docRef = collection(firestore, "users")
-  
-      if (image) {
-        const imageRef = ref(firestorage, "USER_PROFILE_IMG/" + uid + "/" +image.name);
+      const imageRef = ref(firestorage, "USER_PROFILE_IMG/" + uid + "/" +image.name)
+      console.log("星",imageRef)
 
+      if (image) {
         uploadBytes(imageRef, image).then(() => {
           getDownloadURL(imageRef).then((url) => {
             if(profile){
@@ -75,6 +78,7 @@ const DefalutUserSetting = () => {
                     name,
                     image: url,
                     uid,
+                    email,
                   })
                 console.log(url)
                 setSuccess(true)
@@ -89,7 +93,11 @@ const DefalutUserSetting = () => {
             const userRef = doc(firestore, "users", profile?.id);
             updateDoc(userRef, { name });
         } else {
-            addDoc(docRef, { name, image: "", uid });
+            addDoc(docRef, { 
+              name, 
+              image: "", 
+              uid ,
+              email});
         }
         setSuccess(true)
         setTimeout(() => {

@@ -196,7 +196,7 @@ function UserInfo(data) {
                       borderRadius : 5,
                       color:"#6495ed",
                       borderRadius : 3,}}>
-                {user ? user.email : ""}
+                {name ? name : userinfo ? userinfo[0].email : ""}
               </Typography>
             </Grid>
             <Grid item xs={1} align="center"></Grid>
