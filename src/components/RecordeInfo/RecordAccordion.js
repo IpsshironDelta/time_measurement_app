@@ -48,7 +48,7 @@ export default function BasicAccordion(props) {
   const [memo       , setMemo]       = useState("")    // メモを代入
   const [work       , setWork]       = useState("")    // 業務内容を代入
   const [number     , setNumber]     = useState("")    // 個数を代入
-  const [gyoumuID   , setGyoumuID]   = useState([])    // 業務IDを代入
+  const [gyoumuID   , setGyoumuID]   = useState("")    // 業務IDを代入
   const [edit       , setEdit]       = useState(false) // 編集状態
   const [selectuser , setSelectUser] = useState("")    // 絞り込みするユーザー名を格納
   const [selectwork , setSelectWork] = useState("")    // 絞り込みする業務を格納
@@ -82,20 +82,27 @@ export default function BasicAccordion(props) {
   },[])
 
   // 個数入力のテキストフィールドの値が変更されたときの処理
-  const handleChange = (event) => {
-      const newValue = event.target.value
-      if (newValue >= 1 && newValue <= 200) {
-          setNumber(newValue);
-      }
+  const handleChange = (getText , getIndex) => {
+    const newValue = getText
+    if (newValue >= 1 && newValue <= 200) {
+        setNumber(newValue)
+        const updatedRecord = [...record]           // recordのコピーを作成
+        updatedRecord[getIndex].inputNum = newValue // 対象要素の個数の値を変更
+        setRecord(updatedRecord)                    // recordの値を更新
+        console.log("個数編集",record)
+    }
   }
 
   // ID入力のテキストフィールドの値が変更されたときの処理
-  const handleInputID = (event) => {
-    const newValue = event.target.value;
+  const handleInputID = (getText , getIndex) => {
+    const newValue = getText
     if (/^\d*$/.test(newValue) && newValue.length <= 4) {
-        setGyoumuID(newValue);
+        setGyoumuID(newValue)
+        const updatedRecord = [...record]          // recordのコピーを作成
+        updatedRecord[getIndex].inputID = newValue // 対象要素の個数の値を変更
+        setRecord(updatedRecord)                   // recordの値を更新
+        console.log("業務ID編集",record)
     }
-    console.log(gyoumuID)
   };
 
   // ユーザーリンククリック時の処理
@@ -158,21 +165,34 @@ export default function BasicAccordion(props) {
   }
 
   // キャンセルボタンクリック時の処理
-  const handleClickChancel = (event) => {
+  const handleClickChancel = (event , getIndex) => {
     // 初期化
     setGetID("")
     setWork("")
     setNumber("")
     setMemo("")
     setGyoumuID("")
-    setEdit(false)
+
+    // 編集モード切り替え
+    // setEdit(false)
+
+    const updatedRecord = [...record]    // recordのコピーを作成
+    updatedRecord[getIndex].edit = false // 対象要素のeditの値を変更
+    setRecord(updatedRecord)             // recordの値を更新
+    console.log("キャンセル",record)
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
 
   // 編集ボタンクリック時の処理
-  const handleClickEdit = (event , getStatus) => {
-    // 編集モードに切り替え
-    setEdit(true)
+  const handleClickEdit = (event , getIndex) => {
+    // 編集モード切り替え
+    // setEdit(true)
+
+    const updatedRecord = [...record]    // recordのコピーを作成
+    updatedRecord[getIndex].edit = true // 対象要素のeditの値を変更
+    setRecord(updatedRecord)             // recordの値を更新
+    console.log("編集",record)
+
     event.stopPropagation(); // ボタンクリックがAccordionまで伝搬しないようにする
   }
 
@@ -311,9 +331,13 @@ export default function BasicAccordion(props) {
     getDocs(collection(db, WorkTimeInfo )).then((querySnapshot)=>{
         querySnapshot.forEach((document) => {
             RecordDataAry.push({
-                edit : edit        ,
-                id   : document.id ,
-                ...document.data() ,
+                memo     : ""          ,
+                inputID  : ""          ,
+                inputWork: ""          ,
+                inputNum : ""          ,
+                edit     : edit        ,
+                id       : document.id ,
+                ...document.data()     ,
                 })
         })
     }).then(()=>{
@@ -369,7 +393,7 @@ export default function BasicAccordion(props) {
             </Grid>
         </Grid>
         <br/>
-        {record ? (record.map((item) => (
+        {record ? (record.map((item , index) => (
         <Grid 
             container
             sx={{ p: 1, 
@@ -410,12 +434,12 @@ export default function BasicAccordion(props) {
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {loginUser && AdminUserMail === loginUser.email ? 
                                 <Grid item xs={4} align="center">
-                                    {edit ? 
+                                    {item.edit ? 
                                         <NumberTextFild
                                             id       = "InputNumber"
                                             label    = "個数を入力"
                                             type     = "number"
-                                            value    = {number}
+                                            value    = {item.inputNum}
                                             helperText="入力必須"
                                             sx={{
                                                 '& .MuiInputBase-input': {
@@ -423,7 +447,7 @@ export default function BasicAccordion(props) {
                                                 padding: 0, // セル内の余白を削除
                                                 },
                                             }}
-                                            onChange = {handleChange}/>
+                                            onChange = {(e) => handleChange(e.target.value , index)}/>
                                             : 
                                         <Typography
                                             sx = {{
@@ -432,12 +456,12 @@ export default function BasicAccordion(props) {
                                 :
                                 profile && item.uid === profile.uid ?
                                     <Grid item xs={4} align="center">
-                                        {edit ? 
+                                        {item.edit ? 
                                             <NumberTextFild
                                                 id       = "InputNumber"
                                                 label    = "個数を入力"
                                                 type     = "number"
-                                                value    = {number}
+                                                value    = {item.inputNum}
                                                 helperText="入力必須"
                                                 sx={{
                                                     '& .MuiInputBase-input': {
@@ -445,7 +469,7 @@ export default function BasicAccordion(props) {
                                                     padding: 0, // セル内の余白を削除
                                                     },
                                                 }}
-                                                onChange = {handleChange}/>
+                                                onChange = {(e) => handleChange(e.target.value , index)}/>
                                                 : 
                                             <Typography
                                                 sx = {{
@@ -462,19 +486,19 @@ export default function BasicAccordion(props) {
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {loginUser && AdminUserMail === loginUser.email ? 
                                 <Grid item xs={2} align="left">
-                                    {edit ? 
+                                    {item.edit ? 
                                     <InputIDTextField
                                         id       = "gyoumuID"
                                         label    = "業務IDを入力"
                                         type     = "gyoumuID"
-                                        value    = {gyoumuID}
+                                        value    = {item.inputID}
                                         sx={{
                                             '& .MuiInputBase-input': {
                                             height : "55px",
                                             padding: 0, // セル内の余白を削除
                                             },
                                         }}
-                                        onChange = {handleInputID}/>
+                                        onChange = {(e) => handleInputID(e.target.value , index)}/>
                                             :
                                         <Typography
                                             sx = {{
@@ -483,19 +507,19 @@ export default function BasicAccordion(props) {
                                 :
                                 profile && item.uid === profile.uid ?
                                     <Grid item xs={2} align="left">
-                                        {edit ? 
+                                        {item.edit ? 
                                         <InputIDTextField
                                             id       = "gyoumuID"
                                             label    = "業務IDを入力"
                                             type     = "gyoumuID"
-                                            value    = {gyoumuID}
+                                            value    = {item.inputID}
                                             sx={{
                                                 '& .MuiInputBase-input': {
                                                 height : "55px",
                                                 padding: 0, // セル内の余白を削除
                                                 },
                                             }}
-                                            onChange = {handleInputID}/>
+                                            onChange = {(e) => handleInputID(e.target.value , index)}/>
                                                 :
                                             <Typography
                                                 sx = {{
@@ -512,7 +536,7 @@ export default function BasicAccordion(props) {
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {loginUser && AdminUserMail === loginUser.email ? 
                                 <Grid item xs={10} align="left">
-                                    {edit ? 
+                                    {item.edit ? 
                                         <WorkSelect
                                             id           = "WorkSelect"
                                             label        = "業務を選択"
@@ -527,7 +551,7 @@ export default function BasicAccordion(props) {
                                 :
                                 profile && item.uid === profile.uid ?
                                     <Grid item xs={10} align="left">
-                                        {edit ? 
+                                        {item.edit ? 
                                             <WorkSelect
                                                 id           = "WorkSelect"
                                                 label        = "業務を選択"
@@ -550,7 +574,7 @@ export default function BasicAccordion(props) {
                                 {/* 自身の記録のみ編集/削除が可能 */}
                                 {loginUser && AdminUserMail === loginUser.email ? 
                                     <Grid item xs={12} align="left">
-                                    {edit ? 
+                                    {item.edit ? 
                                         <TextField
                                             label        = "メモを入力"
                                             value        = {memo ? memo : "" }
@@ -567,7 +591,7 @@ export default function BasicAccordion(props) {
                                 :
                                 profile && item.uid === profile.uid ?
                                     <Grid item xs={12} align="left">
-                                        {edit ? 
+                                        {item.edit ? 
                                             <TextField
                                                 label        = "メモを入力"
                                                 value        = {memo ? memo : "" }
@@ -595,28 +619,28 @@ export default function BasicAccordion(props) {
                                     <Button
                                         sx = {{top : 10}}
                                         size='small'
-                                        variant={ edit ? "contained" : "outlined"}
-                                        endIcon={ edit ? <SystemUpdateIcon /> : <EditIcon />}
+                                        variant={ item.edit ? "contained" : "outlined"}
+                                        endIcon={ item.edit ? <SystemUpdateIcon /> : <EditIcon />}
                                         onClick={(event) => 
-                                            {edit ? 
+                                            {item.edit ? 
                                                 handleClickUpDate(event ,item) 
                                                 : 
-                                                handleClickEdit(event , item)}}>
-                                            {edit ? "更新" : "編集"}</Button> 
+                                                handleClickEdit(event , index)}}>
+                                            {item.edit ? "更新" : "編集"}</Button> 
                                     /* 自分が登録した記録の場合は、編集ボタンを表示する */
                                     /* editの状態により「編集」「更新」が切り替わる */
                                     : profile && item.uid === profile.uid ? 
                                     <Button
                                     sx = {{top : 10}}
                                     size='small'
-                                    variant={ edit ? "contained" : "outlined"}
-                                    endIcon={ edit ? <SystemUpdateIcon /> : <EditIcon />}
+                                    variant={ item.edit ? "contained" : "outlined"}
+                                    endIcon={ item.edit ? <SystemUpdateIcon /> : <EditIcon />}
                                     onClick={(event) => 
-                                        {edit ? 
+                                        {item.edit ? 
                                             handleClickUpDate(event ,item) 
                                             : 
-                                            handleClickEdit(event , item )}}>
-                                        {edit ? "更新" : "編集"}</Button> 
+                                            handleClickEdit(event , index )}}>
+                                        {item.edit ? "更新" : "編集"}</Button> 
                                     : ""}
                                 </Grid>
 
@@ -628,13 +652,13 @@ export default function BasicAccordion(props) {
                                             sx = {{top : 10}}
                                             size='small'
                                             variant="outlined"
-                                            endIcon={edit ? "" : <DeleteIcon />}
+                                            endIcon={item.edit ? "" : <DeleteIcon />}
                                             onClick={(event) => 
-                                                {edit ? 
-                                                    handleClickChancel(event , item.id)
+                                                {item.edit ? 
+                                                    handleClickChancel(event , index)
                                                 :
                                                     handleClickOpen(event , item.id)}}>
-                                                {edit ? "キャンセル" : "削除"}</Button>
+                                                {item.edit ? "キャンセル" : "削除"}</Button>
                                     /* 自分が登録した記録の場合は、編集ボタンを表示する */
                                     /* editの状態により「編集」「更新」が切り替わる */
                                     : profile && item.uid === profile.uid ? 
@@ -642,13 +666,13 @@ export default function BasicAccordion(props) {
                                             sx = {{top : 10}}
                                             size='small'
                                             variant="outlined"
-                                            endIcon={edit ? "" : <DeleteIcon />}
+                                            endIcon={item.edit ? "" : <DeleteIcon />}
                                             onClick={(event) => 
-                                                {edit ? 
-                                                    handleClickChancel(event , item.id)
+                                                {item.edit ? 
+                                                    handleClickChancel(event , index)
                                                 :
                                                     handleClickOpen(event , item.id)}}>
-                                                {edit ? "キャンセル" : "削除"}</Button>
+                                                {item.edit ? "キャンセル" : "削除"}</Button>
                                     : ""}
                                 </Grid>
                                 <Grid item xs={5} align="right">
