@@ -103,7 +103,17 @@ export default function BasicAccordion(props) {
         setRecord(updatedRecord)                   // recordの値を更新
         console.log("業務ID編集",record)
     }
-  };
+  }
+
+  // 業務選択のセレクトボックスが変更された時の処理
+  const handelSelectWork = (getText , getIndex) =>{
+    const newValue = getText
+    const updatedRecord = [...record]          // recordのコピーを作成
+    updatedRecord[getIndex].inputWork = newValue // 対象要素の個数の値を変更
+    setRecord(updatedRecord)                   // recordの値を更新
+    setWork(newValue)
+    console.log("業務内容編集",record)
+    }
 
   // ユーザーリンククリック時の処理
   const handleButtonClick = (event , getID) => {
@@ -540,9 +550,9 @@ export default function BasicAccordion(props) {
                                         <WorkSelect
                                             id           = "WorkSelect"
                                             label        = "業務を選択"
-                                            value        = {work}
+                                            value        = {item.inputWork}
                                             onChange     = {(e) =>
-                                                setWork(e.target.value)}/>
+                                                handelSelectWork(e.target.value , index)}/>
                                             : 
                                         <Typography
                                             sx = {{
@@ -555,9 +565,9 @@ export default function BasicAccordion(props) {
                                             <WorkSelect
                                                 id           = "WorkSelect"
                                                 label        = "業務を選択"
-                                                value        = {work}
+                                                value        = {item.inputWork}
                                                 onChange     = {(e) =>
-                                                    setWork(e.target.value)}/>
+                                                    handelSelectWork(e.target.value , index)}/>
                                                 : 
                                             <Typography
                                                 sx = {{

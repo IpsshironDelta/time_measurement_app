@@ -176,15 +176,15 @@ function UserInfo(data) {
             </Grid>
             <Grid item xs={1} align="center"></Grid>
 
-            <Grid item xs={1} align="center"></Grid>
+            {/* <Grid item xs={1} align="center"></Grid>
             <Grid item xs={10} align="center">
               <Typography 
-                sx = {{ fontSize: 18 ,
-                  color : "#000000",}}>
+                sx = {{ fontSize: 18 , 
+                  color : "#000000",}}> 
                 メールアドレス
-              </Typography>
+              </Typography> */}
               {/* メールアドレス表示 */}
-              <Typography 
+              {/* <Typography 
                 align="left"
                 sx={{ p: 1, 
                       fontSize: 14 , 
@@ -199,7 +199,7 @@ function UserInfo(data) {
                 {name ? name : userinfo ? userinfo[0].email : ""}
               </Typography>
             </Grid>
-            <Grid item xs={1} align="center"></Grid>
+            <Grid item xs={1} align="center"></Grid> */}
 
             <Grid item xs={12} align="center">
               <Typography 
