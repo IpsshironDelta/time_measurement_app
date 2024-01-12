@@ -53,7 +53,7 @@ export default function ButtonAppBar(props) {
             onClick  = {() => {
               history.push("/")}} 
             sx={{ flexGrow: 1 ,color:"#ffffff"}}>
-            業務時間計測Tool
+            minimoto業務測定
           </Typography>
             <IconButton 
               aria-controls={open ? 'basic-menu' : undefined}
